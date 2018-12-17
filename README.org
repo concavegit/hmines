@@ -1,0 +1,5 @@
+#+title: hMines: Minesweeper with a Doomsday Button
+
+This is the standard game of mine sweeper except for one change:
+If there are no safe moves, you can hit a button and it will uncover a random safe square.
+However, if you hit the button and there is a safe move, you lose.

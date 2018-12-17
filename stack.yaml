@@ -1,0 +1,8 @@
+resolver: lts-12.23
+packages:
+  - .
+extra-deps:
+  - grid-7.8.11
+  - haskell-src-exts-1.21.0
+  - reactive-banana-1.2.0.0
+  - reactive-banana-gi-gtk-0.4.0.1

@@ -1,0 +1,54 @@
+name:                hmines
+version:             0.1.0.0
+github:              "concavegit/hmines"
+license:             BSD3
+author:              "Kawin Nikomborirak"
+maintainer:          "concavegit@gmail.com"
+copyright:           "2018 Kawin Nikomborirak"
+
+extra-source-files:
+  - README.org
+  - ChangeLog.org
+
+description:         Please see the README on GitLab at <https://gitlab.com/concavegit/hmines#readme>
+
+dependencies:
+  - base >= 4.7 && < 5
+  - array
+  - containers
+  - gi-gtk
+  - haskell-gi-base
+  - grid
+  - hmatrix
+  - mtl
+  - random
+  - reactive-banana
+  - reactive-banana-gi-gtk
+  - vector
+
+library:
+  source-dirs: src
+
+executables:
+  hmines-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - hmines
+
+tests:
+  hmines-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+
+    dependencies:
+      - hmines
+      - hedgehog
