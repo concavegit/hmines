@@ -1,12 +1,10 @@
 module Types
-  ( Tile
-  , Mark (..)
+  ( Board
   , GameTile
-  , Board
+  , Tile
+  , Mark (..)
   ) where
 
-import           Control.Arrow
-import qualified Control.Category as Cat
 import           Data.Array
 
 data Mark = Uncovered | Flagged | Marked | Covered deriving (Eq, Show)
