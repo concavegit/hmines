@@ -26,6 +26,9 @@ dependencies:
   - reactive-banana-gi-gtk
   - vector
 
+ghc-options:
+  - -Wall
+
 library:
   source-dirs: src
 
