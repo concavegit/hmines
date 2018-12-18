@@ -2,6 +2,7 @@
 
 *Work in Progress*
 
+#+attr_html: :width 700px
 [[file:res/demo.png]] 
 
 This is the standard game of mine sweeper except for one change:
