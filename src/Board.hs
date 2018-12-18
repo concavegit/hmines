@@ -90,7 +90,7 @@ surroundingTiles board idx =
   let ((y0, x0), (y1, x1)) = A.bounds board
       boardW = x1 - x0 + 1
       boardH = y1 - y0 + 1
-  in neighbours (rectOctGrid boardH boardW) idx
+  in neighbours (rectOctGrid boardW boardH) idx
 
 uncover :: (Bool, Board) -> (Int, Int) -> (Bool, Board)
 uncover s@(inPlay, board) idx
@@ -108,7 +108,7 @@ uncover s@(inPlay, board) idx
     (True, board A.// [(idx, (tile, Uncovered))]) surrounding
 
   -- Click on a square that is completely flagged
-  | inPlay && tile /= Just 0 && tileMark == Uncovered && tile == Just (length flaggedSurround)
+  | inPlay && not isZero && tileMark == Uncovered && tile == Just (length flaggedSurround)
   = foldr (flip uncover)
     (True, board A.// [(idx, (tile, Uncovered))]) unFlaggedSurround
 
