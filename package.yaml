@@ -34,7 +34,7 @@ library:
   source-dirs: src
 
 executables:
-  hmines-exe:
+  hmines:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
