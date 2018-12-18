@@ -25,6 +25,7 @@ dependencies:
   - reactive-banana
   - reactive-banana-gi-gtk
   - vector
+  - text
 
 ghc-options:
   - -Wall
