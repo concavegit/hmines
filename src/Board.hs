@@ -42,22 +42,22 @@ randSubList n xs = map (xs !!) <$> randRUniq1 n (0, length xs - 1)
 -- such that none are adjacent to the specified location ('x', 'y').
 genMinesSafe
   :: RandomGen g => Int -> (Int, Int) -> (Int, Int) -> State g [(Int, Int)]
-genMinesSafe n (w, h) (x, y) = randSubList n
-  $ ((,) <$> [0..w-1] <*> [0..h-1]) \\ ((,) <$> [x-1..x+1] <*> [y-1..y+1])
+genMinesSafe n (h, w) (x, y) = randSubList n
+  $ ((,) <$> [0..h-1] <*> [0..w-1]) \\ ((,) <$> [y-1..y+1] <*> [x-1..x+1])
 
 -- | Generate a logical matrix of dimensions ('w', 'h') representing
 -- the locations of the mines in 'xs'.
 minesMask :: (Int, Int) -> [(Int, Int)] -> Matrix Double
-minesMask (w, h) xs =
+minesMask (h, w) xs =
   let blank = V.replicate (w * h) 0
-      withMines = blank V.// zip (map (uncurry $ (. (* w)) . (+)) xs) (repeat 1)
+      withMines = blank V.// zip (map (uncurry $ (. (* h)) . (+)) xs) (repeat 1)
   in subMatrix (1, 1) (h, w) . conv2 (konst 1 (3, 3)) . (h >< w)
   $ V.toList withMines
 
 -- | Generate the minesweeper answer key of dimensions 'd' and mines at 'xs'.
 minesKey :: (Int, Int) -> [(Int, Int)] -> Array (Int, Int) Tile
-minesKey d@(w, h) xs = A.listArray ((0, 0), (w - 1, h - 1))
-  (pure . round <$> toList (flatten $ minesMask d xs))
+minesKey d@(h, w) xs = A.listArray ((0, 0), (h - 1, w - 1))
+  (pure . round <$> toList (flatten . tr $  minesMask d xs))
   A.// zip xs (repeat Nothing)
 
 -- | Generate a random minesweeper key with 'n' mines and dimensions 'd'.
@@ -87,7 +87,7 @@ flag = addMark Flagged
 
 surroundingTiles :: Board -> (Int, Int) -> [(Int, Int)]
 surroundingTiles board idx =
-  let ((x0, y0), (x1, y1)) = A.bounds board
+  let ((y0, x0), (y1, x1)) = A.bounds board
       boardW = x1 - x0 + 1
       boardH = y1 - y0 + 1
   in neighbours (rectOctGrid boardH boardW) idx
