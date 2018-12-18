@@ -42,7 +42,7 @@ randSubList n xs = map (xs !!) <$> randRUniq1 n (0, length xs - 1)
 -- such that none are adjacent to the specified location ('x', 'y').
 genMinesSafe
   :: RandomGen g => Int -> (Int, Int) -> (Int, Int) -> State g [(Int, Int)]
-genMinesSafe n (h, w) (x, y) = randSubList n
+genMinesSafe n (h, w) (y, x) = randSubList n
   $ ((,) <$> [0..h-1] <*> [0..w-1]) \\ ((,) <$> [y-1..y+1] <*> [x-1..x+1])
 
 -- | Generate a logical matrix of dimensions ('w', 'h') representing
@@ -50,14 +50,14 @@ genMinesSafe n (h, w) (x, y) = randSubList n
 minesMask :: (Int, Int) -> [(Int, Int)] -> Matrix Double
 minesMask (h, w) xs =
   let blank = V.replicate (w * h) 0
-      withMines = blank V.// zip (map (uncurry $ (. (* h)) . (+)) xs) (repeat 1)
+      withMines = blank V.// zip (map (uncurry $ (+) . (* w)) xs) (repeat 1)
   in subMatrix (1, 1) (h, w) . conv2 (konst 1 (3, 3)) . (h >< w)
   $ V.toList withMines
 
 -- | Generate the minesweeper answer key of dimensions 'd' and mines at 'xs'.
 minesKey :: (Int, Int) -> [(Int, Int)] -> Array (Int, Int) Tile
 minesKey d@(h, w) xs = A.listArray ((0, 0), (h - 1, w - 1))
-  (pure . round <$> toList (flatten . tr $  minesMask d xs))
+  (pure . round <$> toList (flatten $ minesMask d xs))
   A.// zip xs (repeat Nothing)
 
 -- | Generate a random minesweeper key with 'n' mines and dimensions 'd'.
@@ -102,9 +102,15 @@ uncover s@(inPlay, board) idx
     && not isZero
   = (inPlay, board A.// [(idx, (tile, Uncovered))])
 
-  -- Click on a square that is either 0 or marked all around
-  | inPlay && (isZero || tile == Just (length unFlaggedSurround))
-  = foldr (flip uncover) (True, board A.// [(idx, (tile, Uncovered))]) unFlaggedSurround
+  -- Click on a square that is 0.
+  | inPlay && (tileMark == Marked || tileMark == Covered)
+  = foldr (flip uncover)
+    (True, board A.// [(idx, (tile, Uncovered))]) surrounding
+
+  -- Click on a square that is completely flagged
+  | inPlay && tile /= Just 0 && tileMark == Uncovered && tile == Just (length flaggedSurround)
+  = foldr (flip uncover)
+    (True, board A.// [(idx, (tile, Uncovered))]) unFlaggedSurround
 
   | otherwise = s
   where
