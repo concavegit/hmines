@@ -1,6 +1,6 @@
 module Main where
 
-import Lib
+import           Gtk.Widgets
 
 main :: IO ()
-main = someFunc
+main = runGui
