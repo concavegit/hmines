@@ -1,9 +1,10 @@
 module Types
-  ( Board
-  , GameTile
-  , Tile
-  , Mark (..)
-  ) where
+        ( Board
+        , GameTile
+        , Tile
+        , Mark(..)
+        )
+where
 
 import           Data.Array
 

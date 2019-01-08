@@ -29,7 +29,7 @@ genBoard :: (Int, Int) -> MomentIO (Gtk.Grid, Event (Bool, Board))
 genBoard d@(h, w) = do
   grid <- new Gtk.Grid []
   btns <- A.array ((0, 0), (h-1, w-1)) <$> traverse
-    (\(p@(r, c)) -> do
+    (\p@(r, c) -> do
         btn <- new Gtk.Button
           [ #hexpand := True
           , #vexpand := True
@@ -43,8 +43,7 @@ genBoard d@(h, w) = do
   firstClick <- stepper True . unionsConst $ (False <$) <$> btnEs
 
   let btnUncovers = fmap (flip uncover) <$> btnEs
-      btnGenerate = unionsConst
-        $ fmap (\p -> const (uncover (True, evalState (gameBoard 10 d p) (mkStdGen 0)) p)) <$> btnEs
+      btnGenerate = unionsConst $ fmap (\p -> const (uncover (True, evalState (gameBoard 10 d p) (mkStdGen 0)) p)) <$> btnEs
       btnGenerateFst = whenE firstClick btnGenerate
 
   boardE <- accumE (True, undefined) (unionWith const btnGenerateFst (unions btnUncovers))
